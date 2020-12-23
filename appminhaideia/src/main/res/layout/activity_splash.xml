@@ -29,5 +29,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:text="TextView" />
+        android:text="1.0.1" />
 </androidx.appcompat.widget.LinearLayoutCompat>
