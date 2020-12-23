@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
         cliente.setTelefone(telefone);
         cliente.setIdade(idade);
         cliente.setSexo(sexo);
-
         return cliente;
     }
 }
