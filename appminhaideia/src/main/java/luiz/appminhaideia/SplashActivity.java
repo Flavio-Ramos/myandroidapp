@@ -10,7 +10,7 @@ import android.util.Log;
 public class SplashActivity extends AppCompatActivity {
 
     String TAG = "APP_MINHA_IDEIA";
-    int TempoDeEspera = 1000 * 10;
+    int TempoDeEspera = 1000 * 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
