@@ -1,6 +1,8 @@
 package luiz.appminhaideia.view;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,11 +12,24 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import javax.security.auth.login.LoginException;
+
 import luiz.appminhaideia.R;
 import luiz.appminhaideia.core.AppUtil;
 import luiz.appminhaideia.model.Cliente;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG2 = "App_AulaSP";
+    private static final String PREF_NOME = "App_AulaSP_prefe";
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor dados;
+
+    String nomeProduto;
+    int codProduto;
+    float precoProduto;
+    boolean estoqueProduto;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -22,11 +37,52 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.i(TAG2, "onCreate: Rodando");
+        sharedPreferences = getSharedPreferences(PREF_NOME, Context.MODE_PRIVATE);
+        Log.i(TAG2, "onCreate: Pasta Criada");
+
+        dados = sharedPreferences.edit();
+
+        nomeProduto = "Notebook";
+        codProduto = 9808245;
+        precoProduto = 5000.28f;
+        estoqueProduto = true;
+
+        dados.putString("nomeProduto", nomeProduto);
+        dados.putInt("codProduto", codProduto);
+        dados.putFloat("precoProduto", precoProduto);
+        dados.putBoolean("estoqueProduto", estoqueProduto);
+        //salva os dados do prduto 1 no App_AulaSP_prefe.xml
+        dados.apply();
+
+        //Limpa o arquivo App_Aula_prefe.xml inteiro
+        //dados.clear();
+        //dados.apply();
+
+        //deletar um campo App_AulaSP_prefe.xml no exemplo
+        //foi o campo estoque
+        //dados.remove("estoqueProduto");
+        //dados.apply();
+
+        Log.i(TAG2,"Dados gravados..");
+        Log.i(TAG2,"Produto: " + nomeProduto);
+        Log.i(TAG2,"Código: " + codProduto);
+        Log.i(TAG2,"Preço: " + precoProduto);
+        Log.i(TAG2,"Tem no estoque: " + estoqueProduto);
+
+        Log.i(TAG2,"Dados recuperados..");
+        Log.i(TAG2,"Produto: " + sharedPreferences.getString("nomeProduto","Fora de Estoque"));
+        Log.i(TAG2,"Código: " + sharedPreferences.getInt("codProduto",-1));
+        Log.i(TAG2,"Preço: " + sharedPreferences.getFloat("precoProduto", -1.0f));
+        Log.i(TAG2,"Tem no estoque: " + sharedPreferences.getBoolean("estoqueProduto",false));
+
         //rodarMinhaideia();
         //rodarPrimeiroNivelamento();
         //rodarBrawserFake();
-        transfereDadosDeUmaViewParaOutra();
+        //transfereDadosDeUmaViewParaOutra();
     }
+
+
     private void transfereDadosDeUmaViewParaOutra(){
         TextView textNome;
         Bundle bundle = getIntent().getExtras();
