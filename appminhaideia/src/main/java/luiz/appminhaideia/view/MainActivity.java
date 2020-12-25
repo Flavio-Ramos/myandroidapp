@@ -10,11 +10,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import luiz.appminhaideia.R;
+import luiz.appminhaideia.core.AppUtil;
 import luiz.appminhaideia.model.Cliente;
 
 public class MainActivity extends AppCompatActivity {
 
-    String TAG = "APP_MINHA_IDEIA";
     TextView textNome;
     //@SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Bundle bundle = getIntent().getExtras();
-        Log.d(TAG,"Nome: " + bundle.getString("nome"));
-        Log.d(TAG,"Email: " + bundle.getString("email"));
+        Log.d(AppUtil.TAG,"Nome: " + bundle.getString("nome"));
+        Log.d(AppUtil.TAG,"Email: " + bundle.getString("email"));
 
         textNome = findViewById(R.id.textNome);
         textNome.setText("Seja bem vindo(a) " + bundle.getString("nome"));
@@ -45,19 +45,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void rodarMinhaideia(){
-        Log.d(TAG, "onCreate: Tela Main Carregada...");
+        Log.d(AppUtil.TAG, "onCreate: Tela Main Carregada...");
     }
 
     private void rodarPrimeiroNivelamento(){
         Cliente objCliente;
         objCliente = new Cliente("Maria","maria@maria","(011) 9876-5432",30,false);
 
-        Log.i(TAG,exibeCliente(objCliente));
+        Log.i(AppUtil.TAG,exibeCliente(objCliente));
 
         objCliente = atualizaCliente(objCliente.getNome(),"maria@gmail.com",objCliente.getTelefone(),35,objCliente.isSexo(),objCliente);;
 
-        Log.i(TAG,"Atualiando dados......");
-        Log.i(TAG,exibeCliente(objCliente));
+        Log.i(AppUtil.TAG,"Atualiando dados......");
+        Log.i(AppUtil.TAG,exibeCliente(objCliente));
     }
 
 
