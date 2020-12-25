@@ -20,22 +20,30 @@ import luiz.appminhaideia.model.Cliente;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG2 = "App_AulaSP";
-    private static final String PREF_NOME = "App_AulaSP_prefe";
-
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor dados;
-
-    String nomeProduto;
-    int codProduto;
-    float precoProduto;
-    boolean estoqueProduto;
-
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //rodarMinhaideia();
+        //rodarPrimeiroNivelamento();
+        //rodarBrawserFake();
+        //transfereDadosDeUmaViewParaOutra();
+        rodaSharedPreferences();
+    }
+
+    private void rodaSharedPreferences(){
+        String TAG2 = "App_AulaSP";
+        String PREF_NOME = "App_AulaSP_prefe";
+
+        SharedPreferences sharedPreferences;
+        SharedPreferences.Editor dados;
+
+        String nomeProduto;
+        int codProduto;
+        float precoProduto;
+        boolean estoqueProduto;
 
         Log.i(TAG2, "onCreate: Rodando");
         sharedPreferences = getSharedPreferences(PREF_NOME, Context.MODE_PRIVATE);
@@ -61,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
         //deletar um campo App_AulaSP_prefe.xml no exemplo
         //foi o campo estoque
-        //dados.remove("estoqueProduto");
-        //dados.apply();
+        dados.remove("estoqueProduto");
+        dados.apply();
 
         Log.i(TAG2,"Dados gravados..");
         Log.i(TAG2,"Produto: " + nomeProduto);
@@ -75,13 +83,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG2,"Código: " + sharedPreferences.getInt("codProduto",-1));
         Log.i(TAG2,"Preço: " + sharedPreferences.getFloat("precoProduto", -1.0f));
         Log.i(TAG2,"Tem no estoque: " + sharedPreferences.getBoolean("estoqueProduto",false));
-
-        //rodarMinhaideia();
-        //rodarPrimeiroNivelamento();
-        //rodarBrawserFake();
-        //transfereDadosDeUmaViewParaOutra();
     }
-
 
     private void transfereDadosDeUmaViewParaOutra(){
         TextView textNome;
