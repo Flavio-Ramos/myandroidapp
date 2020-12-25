@@ -3,6 +3,7 @@ package luiz.appminhaideia.view;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
@@ -15,33 +16,37 @@ import luiz.appminhaideia.model.Cliente;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView textNome;
-    //@SuppressLint("SetJavaScriptEnabled")
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //rodarMinhaideia();
+        //rodarPrimeiroNivelamento();
+        //rodarBrawserFake();
+        transfereDadosDeUmaViewParaOutra();
+    }
+    private void transfereDadosDeUmaViewParaOutra(){
+        TextView textNome;
         Bundle bundle = getIntent().getExtras();
         Log.d(AppUtil.TAG,"Nome: " + bundle.getString("nome"));
         Log.d(AppUtil.TAG,"Email: " + bundle.getString("email"));
 
         textNome = findViewById(R.id.textNome);
         textNome.setText("Seja bem vindo(a) " + bundle.getString("nome"));
-        //rodarMinhaideia();
-        //rodarPrimeiroNivelamento();
-        //rodarBrawserFake();
     }
 
     private void rodarBrawserFake(){
-        /*
+
         WebView webView = findViewById(R.id.webview);
 
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        webView.setVisibility(View.VISIBLE);
 
         webView.loadUrl("https://www.marcomaddo.com.br");
-         */
+
     }
 
     private void rodarMinhaideia(){
