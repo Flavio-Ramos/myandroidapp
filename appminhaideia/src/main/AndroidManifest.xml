@@ -2,7 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="luiz.appminhaideia">
 
+    <!--permissão liver, não precisa da autorização do usuário-->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!--precisa pedir ao usuário para ativar estas permissões-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/><!--localização aproximada-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/><!--localização precisa-->
 
     <application
         android:allowBackup="true"
