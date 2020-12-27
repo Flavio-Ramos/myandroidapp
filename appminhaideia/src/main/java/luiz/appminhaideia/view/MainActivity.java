@@ -25,25 +25,35 @@ import luiz.appminhaideia.model.Cliente;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "App_GPS";
-    private static final String PREF_NOME = "App_GPS_pref";//nome do arquivo
-
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor dados;
-
-    private static final int REQUEST_LOCATION = 2020;
-    //vai buscar a cordenada GPRS, pode ser 1- triangulada das antenas de celular, 2 - modem ADSL, 3- do gps do celular
-    //pode ser a ultima comunicação registrada
-    LocationManager locationManager;
-
-    float latitude;
-    float longitude;
-
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        //rodarMinhaideia();
+        //rodarPrimeiroNivelamento();
+        //rodarBrawserFake();
+        //transfereDadosDeUmaViewParaOutra();
+        //rodaSharedPreferences();
+        rodaImplementeGPS();
+    }
+
+    private void rodaImplementeGPS(){
+        String TAG = "App_GPS";
+        String PREF_NOME = "App_GPS_pref";//nome do arquivo
+
+        SharedPreferences sharedPreferences;
+        SharedPreferences.Editor dados;
+
+        int REQUEST_LOCATION = 2020;
+        //vai buscar a cordenada GPRS, pode ser 1- triangulada das antenas de celular, 2 - modem ADSL, 3- do gps do celular
+        //pode ser a ultima comunicação registrada
+        LocationManager locationManager;
+
+        float latitude;
+        float longitude;
 
         Log.i(TAG,"Rodando gprs main");
 
@@ -60,48 +70,42 @@ public class MainActivity extends AppCompatActivity {
         if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             onGPS();
         }else{
-            getLocation();
+            getLocation(dados,locationManager,latitude,longitude,REQUEST_LOCATION,TAG,sharedPreferences);
         }
-        //rodarMinhaideia();
-        //rodarPrimeiroNivelamento();
-        //rodarBrawserFake();
-        //transfereDadosDeUmaViewParaOutra();
-        //rodaSharedPreferences();
     }
-
     //vai testar as permissões de localização definidas no arquivo manifeste, se estão liberadas
-    private void getLocation() {
+    private void getLocation(SharedPreferences.Editor tmpDados,LocationManager tmpLocationManager, float tmpLatitude, float tmpLongitude, int tmpREQUEST_LOCATION, String tmpTAG, SharedPreferences tmpSharedPreferences ) {
          if(ActivityCompat.checkSelfPermission(
                  getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
                          getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
          {
-             ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+             ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, tmpREQUEST_LOCATION);
          } else{
              //vai pegar a ultima locatização valida do celular
-             Location locationGPS = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+             Location locationGPS = tmpLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
              if(locationGPS != null){
                  double lat = locationGPS.getLatitude();
                  double longi = locationGPS.getLongitude();
-                 latitude = (float) lat;
-                 longitude = (float) longi;
+                 tmpLatitude = (float) lat;
+                 tmpLongitude = (float) longi;
 
-                 Log.d(TAG, "getLocation if: " + latitude + ", " +  longitude);
+                 Log.d(tmpTAG, "getLocation if: " + tmpLatitude + ", " +  tmpLongitude);
              }else{
-                 latitude = 37.3316926f;
-                 longitude = 122.029792f;
+                 tmpLatitude = 37.3316926f;
+                 tmpLongitude = 122.029792f;
 
-                 Log.d(TAG, "getLocation else: " + latitude + ", " + longitude);
+                 Log.d(tmpTAG, "getLocation else: " + tmpLatitude + ", " + tmpLongitude);
              }
          }
          //salvar os dados
-        dados.putFloat("latitude", latitude);//adiciona valor latitude a dados
-        dados.putFloat("longitude",longitude);//adiciona valor longitude a dados
-        dados.apply();
+        tmpDados.putFloat("latitude", tmpLatitude);//adiciona valor latitude a dados
+        tmpDados.putFloat("longitude",tmpLongitude);//adiciona valor longitude a dados
+        tmpDados.apply();
 
-        Log.i(TAG, "onCreate: Dados recuperados");
+        Log.i(tmpTAG, "onCreate: Dados recuperados");
 
-        Log.d(TAG, "onCreate: Latitude " + sharedPreferences.getFloat("latitude", 0.00f) );
-        Log.d(TAG, "onCreate: Longitude " + sharedPreferences.getFloat("longitude",0.00f));
+        Log.d(tmpTAG, "onCreate: Latitude " + tmpSharedPreferences.getFloat("latitude", 0.00f) );
+        Log.d(tmpTAG, "onCreate: Longitude " + tmpSharedPreferences.getFloat("longitude",0.00f));
     }
 
     //exibe a tela para o usuário comfirmar o acessor a localização
