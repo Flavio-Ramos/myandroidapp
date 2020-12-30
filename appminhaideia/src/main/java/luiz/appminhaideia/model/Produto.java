@@ -1,9 +1,9 @@
 package luiz.appminhaideia.model;
 
-public class Cliente {
-    private  int id;
+public class Produto  {
+    private int id;
     private String nome;
-    private String email;
+    private String fornecedor;
 
     public int getId() {
         return id;
@@ -21,12 +21,12 @@ public class Cliente {
         this.nome = nome;
     }
 
-    public String getEmail() {
-        return email;
+    public String getFornecedor() {
+        return fornecedor;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setFornecedor(String fornecedor) {
+        this.fornecedor = fornecedor;
     }
 
 }

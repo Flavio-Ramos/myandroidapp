@@ -15,12 +15,17 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import luiz.appminhaideia.R;
-import luiz.appminhaideia.core.AppUtil;
+import luiz.appminhaideia.api.AppUtil;
+import luiz.appminhaideia.controller.ClienteController;
 import luiz.appminhaideia.model.Cliente;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,7 +42,44 @@ public class MainActivity extends AppCompatActivity {
         //rodarBrawserFake();
         //transfereDadosDeUmaViewParaOutra();
         //rodaSharedPreferences();
-        rodaImplementeGPS();
+        //rodaImplementeGPS();
+        //rodarIncluirVariosClientes();
+
+        Cliente cliente = new Cliente();
+        ClienteController clienteController = new ClienteController(getBaseContext());
+
+        List<Cliente> clienteList = new ArrayList<>();
+        clienteList = clienteController.listar();
+        for (int i = 0; i < clienteList.size(); i++){
+            cliente.setId(i);
+            if(clienteController.deletar(cliente)){
+                Toast.makeText(this, "Cliente "+ cliente.getNome() +" deletado(a) com sucesso", Toast.LENGTH_SHORT).show();
+                Log.i(AppUtil.TAG, "onCreate: Cliente " + cliente.getNome() + " deletado(a) com sucesso");
+            }else{
+                Toast.makeText(this, "Falha ao deletar o(a) cliente " + cliente.getNome(),Toast.LENGTH_SHORT).show();
+                Log.i(AppUtil.TAG, "onCreate: Falha ao deletar o Cliente " + cliente.getNome());
+            }
+        }
+
+    }
+
+    private  void rodarIncluirVariosClientes(){
+        Cliente cliente = new Cliente();
+        ClienteController clienteController = new ClienteController(getBaseContext());
+
+        for (int i = 0; i < 50; i++){
+            int posicao = i +1;
+            cliente.setNome("Claudia_"+ posicao);
+            cliente.setEmail(posicao+"_maria@maria");
+            //cliente.setId(i);
+            if(clienteController.incluir(cliente)){
+                Toast.makeText(this, "Cliente "+ cliente.getNome() +" incluido(a) com sucesso", Toast.LENGTH_SHORT).show();
+                Log.i(AppUtil.TAG, "onCreate: Cliente " + cliente.getNome() + " incluido com sucesso");
+            }else{
+                Toast.makeText(this, "Falha ao incluir o(a) cliente " + cliente.getNome(),Toast.LENGTH_SHORT).show();
+                Log.i(AppUtil.TAG, "onCreate: Falha ao incluir o Cliente " + cliente.getNome());
+            }
+        }
     }
 
     private void rodaImplementeGPS(){
@@ -192,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void rodarPrimeiroNivelamento(){
+        /*
         Cliente objCliente;
         objCliente = new Cliente("Maria","maria@maria","(011) 9876-5432",30,false);
 
@@ -201,10 +244,12 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i(AppUtil.TAG,"Atualiando dados......");
         Log.i(AppUtil.TAG,exibeCliente(objCliente));
+         */
     }
 
 
     private String exibeCliente(Cliente cliente){
+        /*
         String dadosCliente = "\n";
         dadosCliente += "Nome: " + cliente.getNome() + "\n";
         dadosCliente += "Email: " + cliente.getEmail() + "\n";
@@ -212,6 +257,8 @@ public class MainActivity extends AppCompatActivity {
         dadosCliente += "Idade: " + cliente.getIdade() + "\n";
         dadosCliente += "Sexo: " + parseBooleanString(cliente.isSexo());
         return  dadosCliente;
+         */
+        return "";
     }
 
     private String parseBooleanString(boolean sexo){
@@ -221,11 +268,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Cliente atualizaCliente(String nome, String email,String telefone, int idade,boolean sexo,Cliente cliente){
+        /*
         cliente.setNome(nome);
         cliente.setEmail(email);
         cliente.setTelefone(telefone);
         cliente.setIdade(idade);
         cliente.setSexo(sexo);
+
+         */
         return cliente;
     }
 }

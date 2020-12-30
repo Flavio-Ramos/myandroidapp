@@ -1,16 +1,16 @@
 package luiz.appminhaideia.view;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import luiz.appminhaideia.R;
+import luiz.appminhaideia.api.AppUtil;
 import luiz.appminhaideia.controller.ClienteController;
-import luiz.appminhaideia.core.AppUtil;
 import luiz.appminhaideia.model.Cliente;
 
 public class SplashActivity extends AppCompatActivity {
@@ -25,9 +25,10 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        clienteController = new ClienteController();
+        clienteController = new ClienteController(getBaseContext());
         textAppVersion = findViewById(R.id.textAppVersion);
-        textAppVersion.setText(AppUtil.versaoDoAplicativo());
+        //textAppVersion.setText(AppUtil.versaoDoAplicativo());corrigir depois
+        textAppVersion.setText("Corrigir versão");
         Log.d(AppUtil.TAG, "onCreate: Tela Splash Carregada.....");
         trocarTela();
 
@@ -39,12 +40,9 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                objCliente = new Cliente(
-                        "Juliana",
-                        "juju@gmail.com",
-                        "(011) 9 8745-6123",
-                        25,false
-                );
+                objCliente = new Cliente();
+                objCliente.setNome("Juliana");
+                objCliente.setEmail("juliana@juliana");
 
                 Log.d(AppUtil.TAG, "trocarTela: Aguardando tempo");
                 Intent TrocarDeTela = new Intent(SplashActivity.this, MainActivity.class);
