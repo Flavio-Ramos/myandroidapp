@@ -15,12 +15,17 @@ import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import luiz.appminhaideia.R;
-import luiz.appminhaideia.core.AppUtil;
+import luiz.appminhaideia.api.AppUtil;
+import luiz.appminhaideia.controller.ClienteController;
 import luiz.appminhaideia.model.Cliente;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,13 +39,93 @@ public class MainActivity extends AppCompatActivity {
 
         //rodarMinhaideia();
         //rodarPrimeiroNivelamento();
-        //rodarBrawserFake();
+        rodarBrawserFake();
         //transfereDadosDeUmaViewParaOutra();
         //rodaSharedPreferences();
-        rodaImplementeGPS();
+        //rodaImplementeGPS();
+        //rodarIncluirVariosClientes();
+        //rodarDeletarVariosClientes();
+        //rodarAlterarVariosClientes();
+
+    }
+    private void rodarAlterarVariosClientes() {
+        Cliente cliente = new Cliente();
+        ClienteController clienteController = new ClienteController(getBaseContext());
+
+        List<Cliente> clienteList = new ArrayList<>();
+        clienteList = clienteController.listar();
+
+        if(clienteList.size() > 0){
+            int id = 0;
+            String nome = "";
+            for (int i = 0; i < clienteList.size(); i++) {
+
+                id = clienteList.get(i).getId();
+                nome = clienteList.get(i).getNome();
+
+                cliente.setId(id);
+                cliente.setNome(nome);
+                cliente.setEmail(id + "_caludia@gmail.com");
+
+                if (clienteController.alterar(cliente)) {
+                    Toast.makeText(this, "Cliente " + nome + " alterado(a) com sucesso", Toast.LENGTH_SHORT).show();
+                    Log.i(AppUtil.TAG, "onCreate: Cliente " + nome + " alterado(a) com sucesso");
+                } else {
+                    Toast.makeText(this, "Falha ao alterar o(a) cliente " + nome, Toast.LENGTH_SHORT).show();
+                    Log.i(AppUtil.TAG, "onCreate: Falha ao alterar o(a) Cliente " + nome);
+                }
+            }
+        }else{
+            Toast.makeText(this, "Zero clientes encontrados", Toast.LENGTH_SHORT).show();
+            Log.i(AppUtil.TAG, "Zero clientes encontrados");
+        }
+
     }
 
-    private void rodaImplementeGPS(){
+    private void rodarDeletarVariosClientes() {
+        Cliente cliente = new Cliente();
+        ClienteController clienteController = new ClienteController(getBaseContext());
+
+        List<Cliente> clienteList = new ArrayList<>();
+        clienteList = clienteController.listar();
+
+        int id = 0;
+        String nome = "";
+        for (int i = 0; i < clienteList.size(); i++) {
+            id = clienteList.get(i).getId();
+            nome = clienteList.get(i).getNome();
+            cliente.setId(id);
+
+            if (clienteController.deletar(cliente)) {
+                Toast.makeText(this, "Cliente " + nome + " deletado(a) com sucesso", Toast.LENGTH_SHORT).show();
+                Log.i(AppUtil.TAG, "onCreate: Cliente " + nome + " deletado(a) com sucesso");
+            } else {
+                Toast.makeText(this, "Falha ao deletar o(a) cliente " + nome, Toast.LENGTH_SHORT).show();
+                Log.i(AppUtil.TAG, "onCreate: Falha ao deletar o Cliente " + nome);
+            }
+        }
+    }
+
+    private void rodarIncluirVariosClientes() {
+        Cliente cliente = new Cliente();
+        ClienteController clienteController = new ClienteController(getBaseContext());
+
+        for (int i = 0; i < 50; i++) {
+            int posicao = i + 1;
+            cliente.setNome("Claudia_" + posicao);
+            cliente.setEmail(posicao + "_maria@maria");
+
+            if (clienteController.incluir(cliente)) {
+                Toast.makeText(this, "Cliente " + cliente.getNome() + " incluido(a) com sucesso", Toast.LENGTH_SHORT).show();
+                Log.i(AppUtil.TAG, "onCreate: Cliente " + cliente.getNome() + " incluido com sucesso");
+            } else {
+                Toast.makeText(this, "Falha ao incluir o(a) cliente " + cliente.getNome(), Toast.LENGTH_SHORT).show();
+                Log.i(AppUtil.TAG, "onCreate: Falha ao incluir o Cliente " + cliente.getNome());
+            }
+        }
+    }
+
+    private void rodaImplementeGPS() {
         String TAG = "App_GPS";
         String PREF_NOME = "App_GPS_pref";//nome do arquivo
 
@@ -55,11 +140,11 @@ public class MainActivity extends AppCompatActivity {
         float latitude;
         float longitude;
 
-        Log.i(TAG,"Rodando gprs main");
+        Log.i(TAG, "Rodando gprs main");
 
         sharedPreferences = getSharedPreferences(PREF_NOME, Context.MODE_PRIVATE);
 
-        Log.i(TAG,"Sharede criada");
+        Log.i(TAG, "Sharede criada");
         dados = sharedPreferences.edit();
 
         latitude = 0.00f;
@@ -67,45 +152,45 @@ public class MainActivity extends AppCompatActivity {
 
         locationManager = (LocationManager) getApplication().getSystemService(Context.LOCATION_SERVICE);
 
-        if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             onGPS();
-        }else{
-            getLocation(dados,locationManager,latitude,longitude,REQUEST_LOCATION,TAG,sharedPreferences);
+        } else {
+            getLocation(dados, locationManager, latitude, longitude, REQUEST_LOCATION, TAG, sharedPreferences);
         }
     }
+
     //vai testar as permissões de localização definidas no arquivo manifeste, se estão liberadas
-    private void getLocation(SharedPreferences.Editor tmpDados,LocationManager tmpLocationManager, float tmpLatitude, float tmpLongitude, int tmpREQUEST_LOCATION, String tmpTAG, SharedPreferences tmpSharedPreferences ) {
-         if(ActivityCompat.checkSelfPermission(
-                 getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                         getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-         {
-             ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, tmpREQUEST_LOCATION);
-         } else{
-             //vai pegar a ultima locatização valida do celular
-             Location locationGPS = tmpLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-             if(locationGPS != null){
-                 double lat = locationGPS.getLatitude();
-                 double longi = locationGPS.getLongitude();
-                 tmpLatitude = (float) lat;
-                 tmpLongitude = (float) longi;
+    private void getLocation(SharedPreferences.Editor tmpDados, LocationManager tmpLocationManager, float tmpLatitude, float tmpLongitude, int tmpREQUEST_LOCATION, String tmpTAG, SharedPreferences tmpSharedPreferences) {
+        if (ActivityCompat.checkSelfPermission(
+                getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getParent(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, tmpREQUEST_LOCATION);
+        } else {
+            //vai pegar a ultima locatização valida do celular
+            Location locationGPS = tmpLocationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+            if (locationGPS != null) {
+                double lat = locationGPS.getLatitude();
+                double longi = locationGPS.getLongitude();
+                tmpLatitude = (float) lat;
+                tmpLongitude = (float) longi;
 
-                 Log.d(tmpTAG, "getLocation if: " + tmpLatitude + ", " +  tmpLongitude);
-             }else{
-                 tmpLatitude = 37.3316926f;
-                 tmpLongitude = 122.029792f;
+                Log.d(tmpTAG, "getLocation if: " + tmpLatitude + ", " + tmpLongitude);
+            } else {
+                tmpLatitude = 37.3316926f;
+                tmpLongitude = 122.029792f;
 
-                 Log.d(tmpTAG, "getLocation else: " + tmpLatitude + ", " + tmpLongitude);
-             }
-         }
-         //salvar os dados
+                Log.d(tmpTAG, "getLocation else: " + tmpLatitude + ", " + tmpLongitude);
+            }
+        }
+        //salvar os dados
         tmpDados.putFloat("latitude", tmpLatitude);//adiciona valor latitude a dados
-        tmpDados.putFloat("longitude",tmpLongitude);//adiciona valor longitude a dados
+        tmpDados.putFloat("longitude", tmpLongitude);//adiciona valor longitude a dados
         tmpDados.apply();
 
         Log.i(tmpTAG, "onCreate: Dados recuperados");
 
-        Log.d(tmpTAG, "onCreate: Latitude " + tmpSharedPreferences.getFloat("latitude", 0.00f) );
-        Log.d(tmpTAG, "onCreate: Longitude " + tmpSharedPreferences.getFloat("longitude",0.00f));
+        Log.d(tmpTAG, "onCreate: Latitude " + tmpSharedPreferences.getFloat("latitude", 0.00f));
+        Log.d(tmpTAG, "onCreate: Longitude " + tmpSharedPreferences.getFloat("longitude", 0.00f));
     }
 
     //exibe a tela para o usuário comfirmar o acessor a localização
@@ -113,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
     }
 
-    private void rodaSharedPreferences(){
+    private void rodaSharedPreferences() {
         String TAG2 = "App_AulaSP";
         String PREF_NOME = "App_AulaSP_prefe";
 
@@ -152,30 +237,30 @@ public class MainActivity extends AppCompatActivity {
         dados.remove("estoqueProduto");
         dados.apply();
 
-        Log.i(TAG2,"Dados gravados..");
-        Log.i(TAG2,"Produto: " + nomeProduto);
-        Log.i(TAG2,"Código: " + codProduto);
-        Log.i(TAG2,"Preço: " + precoProduto);
-        Log.i(TAG2,"Tem no estoque: " + estoqueProduto);
+        Log.i(TAG2, "Dados gravados..");
+        Log.i(TAG2, "Produto: " + nomeProduto);
+        Log.i(TAG2, "Código: " + codProduto);
+        Log.i(TAG2, "Preço: " + precoProduto);
+        Log.i(TAG2, "Tem no estoque: " + estoqueProduto);
 
-        Log.i(TAG2,"Dados recuperados..");
-        Log.i(TAG2,"Produto: " + sharedPreferences.getString("nomeProduto","Fora de Estoque"));
-        Log.i(TAG2,"Código: " + sharedPreferences.getInt("codProduto",-1));
-        Log.i(TAG2,"Preço: " + sharedPreferences.getFloat("precoProduto", -1.0f));
-        Log.i(TAG2,"Tem no estoque: " + sharedPreferences.getBoolean("estoqueProduto",false));
+        Log.i(TAG2, "Dados recuperados..");
+        Log.i(TAG2, "Produto: " + sharedPreferences.getString("nomeProduto", "Fora de Estoque"));
+        Log.i(TAG2, "Código: " + sharedPreferences.getInt("codProduto", -1));
+        Log.i(TAG2, "Preço: " + sharedPreferences.getFloat("precoProduto", -1.0f));
+        Log.i(TAG2, "Tem no estoque: " + sharedPreferences.getBoolean("estoqueProduto", false));
     }
 
-    private void transfereDadosDeUmaViewParaOutra(){
+    private void transfereDadosDeUmaViewParaOutra() {
         TextView textNome;
         Bundle bundle = getIntent().getExtras();
-        Log.d(AppUtil.TAG,"Nome: " + bundle.getString("nome"));
-        Log.d(AppUtil.TAG,"Email: " + bundle.getString("email"));
+        Log.d(AppUtil.TAG, "Nome: " + bundle.getString("nome"));
+        Log.d(AppUtil.TAG, "Email: " + bundle.getString("email"));
 
         textNome = findViewById(R.id.textNome);
         textNome.setText("Seja bem vindo(a) " + bundle.getString("nome"));
     }
 
-    private void rodarBrawserFake(){
+    private void rodarBrawserFake() {
 
         WebView webView = findViewById(R.id.webview);
 
@@ -187,11 +272,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void rodarMinhaideia(){
+    private void rodarMinhaideia() {
         Log.d(AppUtil.TAG, "onCreate: Tela Main Carregada...");
     }
 
-    private void rodarPrimeiroNivelamento(){
+    private void rodarPrimeiroNivelamento() {
+        /*
         Cliente objCliente;
         objCliente = new Cliente("Maria","maria@maria","(011) 9876-5432",30,false);
 
@@ -201,10 +287,11 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i(AppUtil.TAG,"Atualiando dados......");
         Log.i(AppUtil.TAG,exibeCliente(objCliente));
+         */
     }
 
-
-    private String exibeCliente(Cliente cliente){
+    private String exibeCliente(Cliente cliente) {
+        /*
         String dadosCliente = "\n";
         dadosCliente += "Nome: " + cliente.getNome() + "\n";
         dadosCliente += "Email: " + cliente.getEmail() + "\n";
@@ -212,20 +299,25 @@ public class MainActivity extends AppCompatActivity {
         dadosCliente += "Idade: " + cliente.getIdade() + "\n";
         dadosCliente += "Sexo: " + parseBooleanString(cliente.isSexo());
         return  dadosCliente;
+         */
+        return "";
     }
 
-    private String parseBooleanString(boolean sexo){
+    private String parseBooleanString(boolean sexo) {
         String tipoSexo;
-        tipoSexo = sexo == true ? "Masculino":"Feminino";
+        tipoSexo = sexo == true ? "Masculino" : "Feminino";
         return tipoSexo;
     }
 
-    private Cliente atualizaCliente(String nome, String email,String telefone, int idade,boolean sexo,Cliente cliente){
+    private Cliente atualizaCliente(String nome, String email, String telefone, int idade, boolean sexo, Cliente cliente) {
+        /*
         cliente.setNome(nome);
         cliente.setEmail(email);
         cliente.setTelefone(telefone);
         cliente.setIdade(idade);
         cliente.setSexo(sexo);
+
+         */
         return cliente;
     }
 }
